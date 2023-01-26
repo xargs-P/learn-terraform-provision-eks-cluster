@@ -18,7 +18,7 @@ module "eks" {
     one = {
       name = "node-group-1"
 
-      instance_types = ["t3.small"]
+      instance_types = ["t3.2xlarge"]
 
       min_size     = 1
       max_size     = 3
@@ -28,11 +28,24 @@ module "eks" {
     two = {
       name = "node-group-2"
 
-      instance_types = ["t3.small"]
+      instance_types = ["t3.2xlarge"]
 
       min_size     = 1
       max_size     = 2
       desired_size = 1
     }
   }
+
+  # Change security group to enable control plane to talk to nodes
+  node_security_group_additional_rules = {
+    ingress_cluster_all = {
+      description                   = "Cluster to node all ports/protocols"
+      protocol                      = "-1"
+      from_port                     = 0
+      to_port                       = 0
+      type                          = "ingress"
+      source_cluster_security_group = true
+    }
+  } 
+
 }
